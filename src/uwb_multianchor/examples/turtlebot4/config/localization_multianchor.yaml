@@ -1,0 +1,108 @@
+# UWB MultiAnchor-based localization configuration
+# Author: Noh
+# Date: 2025
+#
+# This configuration file sets up AMCL to use UWB Tag & Anchor ranging
+# for robot localization instead of traditional LiDAR-based methods.
+
+amcl:
+  ros__parameters:
+    use_sim_time: true
+    
+    # Motion model parameters (Differential drive)
+    alpha1: 0.2  # Rotation noise from rotation
+    alpha2: 0.2  # Rotation noise from translation
+    alpha3: 0.2  # Translation noise from translation
+    alpha4: 0.2  # Translation noise from rotation
+    alpha5: 0.2  # Translation noise from strafe
+    
+    # Frame IDs
+    base_frame_id: "base_link"
+    global_frame_id: "map"
+    odom_frame_id: "odom"
+    
+    # UWB Tag & Anchor sensor model
+    laser_model_type: "Tag&Anchors"
+    
+    # Anchor positions in world frame (x, y, z in meters)
+    # These coordinates MUST match the anchors defined in the URDF file
+    anchors: [
+      -5.0, -11.25, 5.0,   # Anchor 0
+      -5.0,  -3.75, 5.0,   # Anchor 1
+      -5.0,   3.75, 5.0,   # Anchor 2
+      -5.0,  11.25, 5.0,   # Anchor 3
+       5.0, -11.25, 5.0,   # Anchor 4
+       5.0,  -3.75, 5.0,   # Anchor 5
+       5.0,   3.75, 5.0,   # Anchor 6
+       5.0,  11.25, 5.0    # Anchor 7
+    ]
+    
+    # Measurement noise parameters
+    # MUST match the noise values in the URDF sensor definition
+    sigma_hit: 0.2          # Range measurement std dev (meters)
+    sigma_azimuth: 0.087    # Azimuth measurement std dev (radians, ~5 degrees)
+    
+    # Particle filter parameters
+    max_particles: 2000     # Maximum number of particles
+    min_particles: 500      # Minimum number of particles
+    max_beams: 60          # Maximum beams to use per update
+    
+    # Resample parameters
+    pf_err: 0.05           # Particle filter population error
+    pf_z: 0.99             # Particle filter population density
+    resample_interval: 1   # Resample every N updates
+    
+    # Update thresholds
+    update_min_d: 0.25     # Minimum translation for update (meters)
+    update_min_a: 0.2      # Minimum rotation for update (radians)
+    
+    # Measurement model weights
+    # For UWB, we use only the hit component (no random/max/short)
+    z_hit: 1.0             # Weight for correct measurements
+    z_max: 0.0             # Weight for max range measurements
+    z_rand: 0.0            # Weight for random measurements
+    z_short: 0.0           # Weight for short measurements
+    
+    # Recovery parameters
+    recovery_alpha_fast: 0.0   # Fast recovery rate
+    recovery_alpha_slow: 0.0   # Slow recovery rate
+    
+    # Robot model
+    robot_model_type: "nav2_amcl::DifferentialMotionModel"
+    
+    # Other parameters
+    save_pose_rate: 0.5           # Rate to save pose (Hz)
+    tf_broadcast: true            # Broadcast TF transforms
+    transform_tolerance: 1.0      # TF transform tolerance (seconds)
+    
+    # Beam skip parameters (not used for UWB)
+    do_beamskip: false
+    beam_skip_distance: 0.5
+    beam_skip_error_threshold: 0.9
+    beam_skip_threshold: 0.3
+    
+    # Laser parameters
+    laser_likelihood_max_dist: 2.0
+    laser_max_range: 100.0
+    laser_min_range: -1.0
+    lambda_short: 0.1
+    
+    # Topic names
+    scan_topic: scan
+
+# Map server configuration
+map_server:
+  ros__parameters:
+    use_sim_time: true
+    # Map file is typically specified via launch file argument
+    yaml_filename: ""
+
+# Map saver configuration
+map_saver:
+  ros__parameters:
+    use_sim_time: true
+    save_map_timeout: 5.0
+    free_thresh_default: 0.25
+    occupied_thresh_default: 0.65
+    map_subscribe_transient_local: true
+

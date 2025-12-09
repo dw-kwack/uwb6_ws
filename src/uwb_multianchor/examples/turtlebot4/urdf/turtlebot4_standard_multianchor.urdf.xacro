@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<robot name="turtlebot4" xmlns:xacro="http://ros.org/wiki/xacro">
+  
+  <!-- Include base TurtleBot4 Standard model (complete robot) -->
+  <xacro:include filename="$(find turtlebot4_description)/urdf/standard/turtlebot4.urdf.xacro" />
+  
+  <!-- Include UWB MultiAnchor sensor -->
+  <xacro:include filename="$(find uwb_multianchor)/urdf/multianchor_sensor.urdf.xacro" />
+  
+  <!-- UWB tag offset (relative to shell_link) -->
+  <xacro:property name="uwb_tag_x_offset"              value="${0.393584*cm2m}"/>
+  <xacro:property name="uwb_tag_y_offset"              value="${0*cm2m}"/>
+  <xacro:property name="uwb_tag_z_offset"              value="${7.529272*cm2m}"/>
+  
+  <!-- Add UWB MultiAnchor sensor to the robot -->
+  <xacro:uwb_multianchor_sensor name="multianchorsensor" parent_link="shell_link">
+    <origin xyz="${uwb_tag_x_offset} ${uwb_tag_y_offset} ${uwb_tag_z_offset}"
+            rpy="0 0 ${pi/2}"/>
+  </xacro:uwb_multianchor_sensor>
+
+</robot>
+
