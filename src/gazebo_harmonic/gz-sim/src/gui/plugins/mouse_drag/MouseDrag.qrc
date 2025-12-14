@@ -1,5 +1,0 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource prefix="MouseDrag/">
-  <file>MouseDrag.qml</file>
-</qresource>
-</RCC>

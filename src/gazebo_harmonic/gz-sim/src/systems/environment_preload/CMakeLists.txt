@@ -1,9 +1,0 @@
-gz_add_system(environment-preload
-  SOURCES
-    EnvironmentPreload.cc
-    VisualizationTool.cc
-  PUBLIC_LINK_LIBS
-    gz-common::gz-common
-    gz-common::io
-    gz-math::gz-math
-)
